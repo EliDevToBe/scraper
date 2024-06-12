@@ -6,8 +6,8 @@ const urlsToScrap = [
     // URL
 ];
 
-
 let nameOfMyFile = "allPagesScraped";
+
 async function scraper() {
 
     console.log(`Urls are beeing scraped! ${urlsToScrap.length} pages incomming.`);
@@ -22,7 +22,6 @@ async function scraper() {
     process.stdout.write(startProgressBar + endProgressBar);
     // ========= END ========
 
-
     const browser = await puppeteer.launch(/*{ headless: false }*/);
     let dataOfAllUrls = [];
 
@@ -34,6 +33,7 @@ async function scraper() {
 
             const pageData = await page.evaluate(() => {
 
+                // === Retrieving basic infos of product ===
                 let productName = document.querySelector("h1")
                     .innerText
                     .toLowerCase();
@@ -55,7 +55,9 @@ async function scraper() {
 
                 let materialQuality = "premium";
 
-                let pageObject = {
+                // === Storing basic infos into an object representing
+                // = the page product
+                let productObject = {
                     name: productName,
                     brand: {
                         brandName: "brand",
@@ -74,9 +76,12 @@ async function scraper() {
                     variants: []
                 }
 
+                // === Selection of all variants of product
+                // = & iteration over them
                 let tableOfVariants = document.querySelectorAll("tbody > tr");
 
                 for (row of tableOfVariants) {
+
 
                     let size = row.children[0].innerText;
                     let rating = row.children[1].innerText;
@@ -84,7 +89,7 @@ async function scraper() {
                     let maxLength = row.children[3].innerText.slice(0, 2);
                     let innerDiameter = null;
 
-                    let variantPageObject = {
+                    let variantObject = {
                         size: parseInt(size),
                         innerDiameter: innerDiameter,
                         outerDiameter: outerDiameter,
@@ -93,10 +98,13 @@ async function scraper() {
                         sizeRecommended: null
                     };
 
-                    pageObject.variants.push(variantPageObject);
+                    // === Each variant beeing pushed into
+                    // = the 'variants' key array
+                    productObject.variants.push(variantObject);
+
                 } // END of LOOP over variants
 
-                return pageObject;
+                return productObject;
             }).then((data) => {
 
                 // == Update progress bar ==
@@ -107,8 +115,7 @@ async function scraper() {
                 // ========== END ==========
 
                 dataOfAllUrls.push(data)
-            })
-
+            }) // == END of one page and variants of product
             page.close();
 
         } catch (error) {
@@ -121,7 +128,7 @@ async function scraper() {
             console.log(url + " - - --> error");
             console.log(error);
         }
-    } // END of LOOP over urls
+    } // END of iteration over url
     browser.close();
 
     return dataOfAllUrls;
@@ -131,6 +138,7 @@ scraper()
     .then((data) => {
         process.stdout.write("\r\x1b[K");
 
+        // == Writing locally the output to a json format
         fs.writeFile(
             `./${nameOfMyFile}.json`,
             JSON.stringify(data, null, 2),
