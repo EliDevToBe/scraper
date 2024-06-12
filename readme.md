@@ -5,7 +5,7 @@ This is a project using **Puppeteer** and **NodeJS**.
 Why _'Mini-Project'_ you're asking ?  
 It's one brick of a bigger project that I'm currently developping as I'm learning code and _how to code_ in general.  
 
-## Okay, but what's it doing ?
+### Okay, but what's it doing ?
 
 - Goes to a specified URL of a specific website
 - Retrieve informations, JSON ready
