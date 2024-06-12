@@ -107,16 +107,8 @@ async function scraper() {
                 // ========== END ==========
 
                 dataOfAllUrls.push(data)
-                // return data
             })
-            // .then((data) => {
 
-            //     fs.writeFile(
-            //         `./JSONs/${data.arrowName}.json`,
-            //         JSON.stringify(data, null, 2),
-            //         (err) => err ? console.error("not written", err) : console.log(`ok`)
-            //     );
-            // })
             page.close();
 
         } catch (error) {
